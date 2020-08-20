@@ -4,8 +4,9 @@ import pandas as pd
 import numpy as np
 import scipy.stats as sp
 import matplotlib.pyplot as plt
-from distfit import distfit
+#from distfit import distfit
 import matplotlib.gridspec as gridspec
+import os 
 
 
 
@@ -133,11 +134,17 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
 #========================MAIN==============================
 
-data = str(input('Name a dataset from your file directory: '))
-index = str(input('Input an index: '))
+#file = str(input('Name a dataset from your file directory: '))
+#data = './database/{}'.format(file)
+#print(data)
 
 
-inputData = readData(data, indexName = index)
+
+#index = str(input('Input an index: '))
+cwd = os.getcwd()
+print(cwd)
+inputData = readData('benfordsLaw/database/rainfall.csv', 'Liberia')
+#inputData = readData(data, indexName = index)
 computeObserved = computeFstDigit(inputData)
 computePredicted = lookForExpectedCounts(computeObserved[2])
 
