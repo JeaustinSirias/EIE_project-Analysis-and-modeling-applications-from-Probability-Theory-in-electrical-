@@ -5,9 +5,6 @@ import numpy as np
 import scipy.stats as sp
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-import os 
-
-
 
 #========Functions==========
 
@@ -44,7 +41,6 @@ def computeFstDigit(vector):
 	for k in np.arange(1, 10, 1):
 		count = fstDigit.count(k)
 		counters.append(count)
-
 	totalSum = sum(counters)
 	dataPerc = [i/totalSum for i in counters]
 
@@ -87,16 +83,16 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
 	#RawData plot
 	rawData.plot(xData, dataset, color = 'tab:red')
-	rawData.set_xlabel('Dedaks')
-	rawData.set_ylabel('Rainfall [mm]')
-	rawData.set_title('Rainfall behavior from 1985 to 2019 in La Pita')
+	rawData.set_xlabel('Tiempo')
+	rawData.set_ylabel('Variable física')
+	rawData.set_title('Comportamiento histórico de la variable')
 	
 
 	#dataHist
 	dataHist.hist(dataset, bins = 25, color = 'g', histtype='bar', rwidth=0.8)
-	dataHist.set_ylabel('Frequency')
-	dataHist.set_xlabel('Rainfall [mm]')
-	dataHist.set_title('Rainfall distribution')
+	dataHist.set_ylabel('Frequencia')
+	dataHist.set_xlabel('Variable física ')
+	dataHist.set_title('Histograma')
 
 	#benfordDist
 
@@ -113,7 +109,6 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 	benfordDist.set_xlabel('Leading digit')
 	benfordDist.set_xticks(xDigits)
 	benfordDist.set_xticklabels(('1', '2', '3', '4', '5', '6', '7', '8', '9'))
-
 	benfordDist.set_ylabel('Number of occurrences')
 	benfordDist.set_title('Leading digits distribution: Observed vs. Expected')
 	benfordDist.legend()
@@ -137,8 +132,7 @@ file = str(input('Name a dataset from your file directory: '))
 data = './database/{}'.format(file)
 index = str(input('Input an index: '))
 
-
-#inputData = readData('benfordsLaw/database/rainfall.csv', 'Liberia')
+#CALLING FUNCTIONS
 inputData = readData(data, indexName = index)
 computeObserved = computeFstDigit(inputData)
 computePredicted = lookForExpectedCounts(computeObserved[2])
