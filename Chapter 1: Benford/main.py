@@ -8,11 +8,14 @@ import matplotlib.gridspec as gridspec
 
 #========Functions==========
 
+######################################################################################################
+
 def readData(inputDs, indexName): #indexName is a *kwarg
 
 	data = pd.read_csv(inputDs, header = None, skiprows = 1, index_col = 0 )
 	return np.array(data.loc['{}'.format(indexName)])
 
+######################################################################################################
 
 def computeFstDigit(vector):
 
@@ -47,6 +50,7 @@ def computeFstDigit(vector):
 	return counters, dataPerc, totalSum
 	#reading first digit for each element
 
+######################################################################################################
 
 def lookForExpectedCounts(countsNum):
 
@@ -55,6 +59,7 @@ def lookForExpectedCounts(countsNum):
 
 	return predictedVals, bfVals
 
+######################################################################################################
 
 def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
@@ -65,9 +70,7 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
 	for i in np.arange(0, 9, 1):
 
-		print('{num} Observed Prob: {p1}, Expected Prob: {p2}'.format(num = i +1, 
-																		p1 = round(pReal[i], 3),
-																			p2 = round(bfVals[i]/100, 3)))
+		print('{num} Observed Prob: {p1}, Expected Prob: {p2}'.format(num = i +1, p1 = round(pReal[i], 3), p2 = round(bfVals[i]/100, 3)))
 
 	#plotting
 	plt.rcParams['axes.grid'] = True
@@ -102,7 +105,6 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
 		if i == xDigits[-1]:
 			benfordDist.plot(i, ExpCounts[i-1], marker = 's', markersize = 8, color = 'firebrick', label = 'Benford\'s Law expected occurrences')
-
 		else:
 			benfordDist.plot(i, ExpCounts[i-1], marker = 's', markersize = 8, color = 'firebrick')
 
@@ -124,6 +126,72 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
 	fig.align_labels()
 	plt.show()
+
+######################################################################################################
+
+
+'''According to Benfords law, probability of occurrence for leading digit is
+P_1stD = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]. cero is considered as null
+Aditionally we can generalize more digits beyond the first one. For the second digit we have
+the next probability.
+
+P_2ndD = [12, 11.4, 10.9, 10.4, 10, 9.7, 9.3, 9, 8.8, 8.5] it doesnt consider zero as null.
+'''
+
+#SOLUCION AL LA PARTE 1:
+'''Estudiar las probabilidades condicionales de ocurrencia del 2do digito dada la
+ocurrencia del 1er digito
+
+Aqui se requiere utilizar el concepto de probabilidad condicional P(A|B) = P(A n B) / P(B)
+En este caso P(A|B) de entenderse como la probabilidad conjunta de que ocurran dos ciertos digitos
+seguidos. La generalizacion de la ley de Benford puede extenderse para n en 10 <= n <= 99 con
+P(n) = log10(n+1) - log10(n). Entonces se busca la probabilidad conjunta con la siguiente funcion:
+'''
+def probConjunta():
+	
+	digits = np.arange(10, 100, 1) #{10, 11, 12, ..., 99}
+	probabilities = [np.log10(i+1) - np.log(i) for i in digits]
+	return probabilites
+
+'''La probabilidad condicional entonces puede llamarse por una nueva funcion que responda
+¿cual es la probabilidad de que el segundo digito sea j dado a que el primer digito fue i?'''
+
+def probCondicional(probConjunta_vector):
+	
+	1stDigit_linspace = np.arange(0, 10, 1)
+	12Digits_linspace = np.arange(0, len(probConjunta_vector), 1)
+	prob_msd = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6] #probabilidad del digito mas siginificativo por benford
+	
+	probCondicional = []
+	for i in 1stDigit_linspace:
+		for j in 12Digits_linspace:
+			
+			P = round(probConjunta_vector[j]/pro_msd[i], 2)
+			probCondicional.append(P)
+	return probCondicional
+
+	
+	
+
+
+
+'''
+def isConditional():
+	
+	#Por Benford las probabilidades para el 1er y 2do digito son:
+	P_1stD = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
+	P_2ndD = [12, 11.4, 10.9, 10.4, 10, 9.7, 9.3, 9, 8.8, 8.5]
+
+	#Se pretende buscar la probalidad condicional 
+	fst_symbols = np.arange(1, 10, 1)
+	scnd_symbols = np.arange(0, 10, 1)
+
+	for i in fst_symbols:
+		for j in  scnd_symbols:
+			
+			P = 
+
+'''
 
 
 #========================MAIN==============================
@@ -151,17 +219,7 @@ printSummary(inputData, ObsCounts, ExpCounts, ObsProbability, BenProbability)
 
 
 
-'''
-dist = distfit(distr = 'full')
-dist.fit_transform(dataset)
-bestDist = dist.model
-print(bestDist)
-dist.plot_summary()
-'''
 
-
-
-	
 	
 
 
