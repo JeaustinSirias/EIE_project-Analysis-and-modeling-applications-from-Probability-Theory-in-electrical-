@@ -20,8 +20,9 @@ def acondicionar_datos(json, tiempo):
 	for datos in range(muestras):
 		
 		hora = df[datos][0]['fechaHora']
-		if int(hora[11:13]) == tiempo:
-			demanda.append(df[datos][0]['MW'])
+		#if int(hora[11:13]) == tiempo:
+		demanda.append(df[datos][0]['MW'])
+	
 	return demanda
 		
 #===============================================================================
@@ -34,18 +35,25 @@ def evaluar_modelos(datos, dists, Bins, hora):
 
 	#Se prepara el espacio de visualizacion:
 	fig, ax = plt.subplots(1, 3, figsize = (16, 5), tight_layout = True)
+	#fig1:
 	ax[0].set_title('Distribución observada: demanda a las {}'.format(datetime.time(hora)))
 	ax[0].set_xlabel('Potencia [MW]')
 	ax[0].set_ylabel('Frecuencia')
+	#fig2:
 	ax[1].set_title('Ajuste por funciones de densidad')
 	ax[1].set_ylabel('Frecuencia')
 	ax[1].set_xlabel('Potencia [MW]')
+	#fig3:
 	ax[2].set_title('Mejor ajuste basado en criterios de bondad')
 	ax[2].set_ylabel('Frecuencia')
 	ax[2].set_xlabel('Potencia [MW]')
 	
 	#Distribucion observada:
-	ocurrencias_exp, bins = np.histogram(datos, bins = Bins, normed = False)
+	ocurrencias_exp, bins = np.histogram(datos, bins = Bins)
+	for i in range(Bins):
+		if ocurrencias_exp[i] == 0:
+			ocurrencias_exp[i] = 1
+
 	bins_centrados = (bins + np.roll(bins, -1))[:-1] / 2.0 
 	escala = len(datos) * (max(datos) - min(datos)) / len(bins_centrados)
 	
@@ -106,6 +114,7 @@ def evaluar_modelos(datos, dists, Bins, hora):
 	print('El mejor ajuste por chisquare ocurre con la distribución', dist_chi)
 	print('El mejor ajuste por Kolmogorov ocurre con la distribución', dist_ks)
 	print('Mejor modelo ajustada por criterios de bondad:', mejor_ajuste)
+	print('Cantidad de muestras:', len(datos))	
 	print('.\n.\n.\n.\nMomentos centrales para el mejor ajuste:', '\nMedia:', m, '\nVarianza:', v, '\nCoef. Simetría:', s, '\nCurtosis:', k)
 	ax[1].legend()
 	ax[2].legend()
@@ -113,10 +122,21 @@ def evaluar_modelos(datos, dists, Bins, hora):
 	
 #================================================================================================
 
-distribuciones = ['norm', 'rayleigh', 'expon', 'uniform', 'burr12', 'alpha', 'gamma', 'beta']
-demandas = acondicionar_datos('./database/data.json', tiempo = 18)
-modelo = evaluar_modelos(demandas, distribuciones, 15, hora = 18)
-
+'''
+distribuciones = ['norm', 'rayleigh', 'expon', 'uniform', 'burr12', 'alpha', 'gamma', 'beta', 'pareto']
+hora = 17
+demandas = acondicionar_datos('./database/data.json', hora)
+demandas = np.array(demandas)
+x = range(len(demandas))
+plt.figure(tight_layout = True)
+plt.plot(x, demandas, color = 'tab:green')
+plt.title('Demanda energética nacional por hora desde el 01-01-2019 al 13-09-2019', fontsize =  16)
+plt.ylabel('Demanda [KW]', fontsize = 14)
+plt.xlabel('Tiempo [h]', fontsize =  14)
+plt.grid()
+plt.show()
+#modelo = evaluar_modelos(demandas, distribuciones, 25, hora)
+'''
 
 
 
