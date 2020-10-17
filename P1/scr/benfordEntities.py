@@ -6,6 +6,10 @@ import scipy.stats as sp
 import matplotlib.pyplot as plt
 #from distfit import distfit
 import matplotlib.gridspec as gridspec
+from matplotlib import rcParams
+import matplotlib.font_manager
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['Tahoma']
 import os 
 
 
@@ -67,6 +71,8 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 	print('Observed counts: {}'.format(ObsCounts))
 	print('Expected counts: {}\n. \n. \n. \n. \n.'.format(ExpCounts))
 	print("Probabilities\n. \n. \n. \n. \n.")
+	
+    
 
 	for i in np.arange(0, 9, 1):
 
@@ -75,7 +81,7 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 																			p2 = round(bfVals[i]/100, 3)))
 
 	#plotting
-	plt.rcParams['axes.grid'] = True
+	#plt.rcParams['axes.grid'] = True
 	fig = plt.figure(tight_layout = True, figsize = (11, 8))
 	figGrid = gridspec.GridSpec(2, 2)
 	rawData = fig.add_subplot(figGrid[0, 0])
@@ -141,9 +147,8 @@ def printSummary(dataset, ObsCounts, ExpCounts, pReal, bfVals):
 
 
 #index = str(input('Input an index: '))
-cwd = os.getcwd()
-print(cwd)
-inputData = readData('benfordsLaw/database/rainfall.csv', 'Liberia')
+
+inputData = readData('rainfall.csv', 'Liberia')
 #inputData = readData(data, indexName = index)
 computeObserved = computeFstDigit(inputData)
 computePredicted = lookForExpectedCounts(computeObserved[2])
