@@ -21,8 +21,8 @@ def acondicionar_datos(json, tiempo):
 	for datos in range(muestras):
 		
 		hora = df[datos][0]['fechaHora']
-		#if int(hora[11:13]) == tiempo:
-		demanda.append(df[datos][0]['MW'])
+		if int(hora[11:13]) == tiempo:
+			demanda.append(df[datos][0]['MW'])
 	
 	return demanda
 		
@@ -124,20 +124,10 @@ def evaluar_modelos(datos, dists, Bins, hora):
 #================================================================================================
 
 
-#distribuciones = ['norm', 'rayleigh', 'expon', 'uniform', 'burr12', 'alpha', 'gamma', 'beta', 'pareto']
-hora = 17
-demandas = acondicionar_datos('./database/demanda_2019.json', hora)
-demandas = np.array(demandas)
-x = range(len(demandas))
-plt.figure(tight_layout = True, figsize = (9, 5))
-plt.plot(x, demandas, color = 'tab:green')
-#plt.title('Demanda energética nacional por hora desde el 01-01-2019 al 13-09-2019', fontsize =  16)
-plt.ylabel('Demanda [KW]')
-plt.xlabel('Tiempo [h]')
-plt.grid()
-tikz.save('demanda.tex')
-plt.show()
-#modelo = evaluar_modelos(demandas, distribuciones, 25, hora)
+distribuciones = ['norm', 'rayleigh', 'expon', 'uniform', 'burr12', 'alpha', 'gamma', 'beta', 'pareto']
+hora = 3
+demandas = acondicionar_datos('demanda_2019.json', hora)
+modelo = evaluar_modelos(demandas, distribuciones, 15, hora)
 
 
 
