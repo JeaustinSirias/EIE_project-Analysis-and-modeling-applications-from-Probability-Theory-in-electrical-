@@ -48,17 +48,19 @@ def mejor_ajuste(datos):
 	return dist, params
 
 #====================================================================
-def distribucion_conjunta(h1, h2, Bins):
+def distribucion_conjunta(demanda1, demanda2, Bins):
 
 	# Se inicializa la figura interactiva 3D
 	fig = plt.figure()
 	ax = fig.add_subplot(111, projection='3d')
 
 	# Se obtiene el plano de probabilidades para graficar el hist3D
-	hist, xbins, ybins = np.histogram2d(h1, h2, bins=Bins, normed=False)
+	hist, xbins, ybins = np.histogram2d(demanda1, demanda2, bins=Bins, normed=False)
+	hist = hist / sum(sum(hist))
+	suma = sum(hist)
 	xbins = (xbins + np.roll(xbins, -1))[:-1] / 2.0 
 	ybins = (ybins + np.roll(ybins, -1))[:-1] / 2.0 
-	escala = len(h1) * (max(h1) - min(h1)) / len(xbins)
+	escala = len(demanda1) * (max(demanda1) - min(demanda1)) / len(xbins)
 
 
 	#Formatos de retorno para la funcion de densidad bivariada discreta
@@ -82,7 +84,7 @@ def distribucion_conjunta(h1, h2, Bins):
 	ax.set_zlabel('Probabilidad')
 	plt.show()
 
-	return xyp, xy, xbins, ybins, escala
+	return xyp, xy, xbins, ybins, escala, suma
 #====================================================================
 def densidad_marginal(xy, bins, dist, params, escala, eje):
 
@@ -149,16 +151,13 @@ def parametros_energia(vector_energia):
 
 data1 = extraer_datos('demanda_2019.json', 18) 
 data2 = extraer_datos('demanda_2019.json', 11) 
-#xyp, xy, xbins, ybins, escala = distribucion_conjunta(data1, data2, Bins=10)
+xyp, xy, xbins, ybins, escala, suma = distribucion_conjunta(data1, data2, Bins=10)
 
+print(sum(suma))
 
 #dist, params = mejor_ajuste(data1)
 #densidad_marginal(xy, xbins, dist, params, escala, eje='x')
 
 
-d = {'Y1':[0.03, 0.09, 0.005, 0.06], 'Y2':[0.04, 0.0056, 0.045, 0.023], 'Y3':[0.04, 0.04, 0.069, 0.0025], 'Y4':[0.04, 0.086, 0.001, 0.0014], 'Y5':[0.04, 0.054, 0.001, 0.084], 'Y6':[0.04, 0.004, 0.06, 0.05] }
-df = pd.DataFrame(data=d)
-
-print(df)
 
 
